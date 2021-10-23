@@ -20,27 +20,25 @@ chmod +x search.py
 **Output:**
 
 ```bash
-Enter absolute path of parent directory: __ Enter here __
-Found __abspath__
-What pattern are you looking for?: __ Enter here __
+Enter the directory to search for a string:
+[ Directory found ]
+Enter the string to search for in the files:
+[ String added ]
+[ Searching files ... ]
 
-Searching. . .
+# example find scenario
+[ file type '*.txt' • file '<_io.TextIOWrapper name...' • line 0 ]
+...
 
-Found __numofoccurrences__ occurrences in __file1found__
-  * Line __linenum__ at index __indexnum__
-	..
-
-Found __numofoccurrences__ occurrences in __file2found__
-..
-
-All done!
+100 occurrences of the string 'apple'
+[ All done! ]
 
 [ If command is redone with --remove-all, greppy will remove all occurrences in all files in subdirectories of searched parent directory ]
 ```
 
 ## Unit Tests
 
-Currently setting up a testing environment.
+Currently setting up a testing environment. Trying to figure out best way to minimize throughput through tree layout.
 
 ## Contributions
 

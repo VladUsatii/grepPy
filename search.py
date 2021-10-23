@@ -50,6 +50,7 @@ def main():
 		cons.print("[ String added ]", style="bold yellow")
 		cons.print("[ Searching files ... ]", style="bold white")
 		search(dirs, string)
+		cons.print("[ All done! ]", style="bold green")
 	elif dirs[-1:] == "/":
 		cons.print("[ Enter directory without an ending slash ]", style="bold red")
 	else:
