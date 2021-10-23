@@ -1,71 +1,66 @@
 #!/usr/bin/env python3
 import re, sys, os, time
 import itertools
+import glob
+from rich.console import Console
 
-# --load-anim
-n_points = 5
-points_l = [ '.' * i + ' ' * (n_points - i) + '\r' for i in range(n_points) ]
-cond = True
+# init Rich
+cons = Console()
 
+user = os.environ.get("USER") # user
 
+def search(dirs: str, string: str) -> list:
+	matches = 0
 
-class Path(object):
-	def __init__(self):
-		self.user = os.environ.get("USER") # user
-		
+	# supported file search -> release 1
+	TXTFILES = [f for f in glob.glob(f"{dirs}/*.txt")]
+	PYFILES = [f for f in glob.glob(f"{dirs}/*.py")]
+	HTMLFILES = [f for f in glob.glob(f"{dirs}/*.html")]
 
-	def search(self, i1: str, i2: str): # dir, str to search
+	FILES = list(itertools.chain(TXTFILES, PYFILES, HTMLFILES))
+	print(FILES)
 
-		# checks if is binary file
-		textchars = bytearray({7,8,9,10,12,13,27} | set(range(0x20, 0x100)) - {0x7f})
-		is_binary_string = lambda bytes: bool(bytes.translate(None, textchars))
+	# search and document
 
-		diros = os.listdir(i1)
-		diros = diros.remove('.DS_Store')
+	# TXTFILES
+	for f in FILES:
+		with open(f) as obj:
+			# gather types
+			if ".txt" in f:
+				types = "*.txt"
+			elif ".py" in f:
+				types = "*.py"
+			elif ".html" in f:
+				types = "*.html"
 
-		for filename in diros:
-			with open(filename, 'rb') as rf:
-				if is_binary_string(rf.read(1024)) == False:
-					print(f"Searching {filename} for substring...")
-					content = rf.readlines()
-					for index, line in enumerate(content):
-						for x in [f"Found at index {m.start()} on line {line}" for m in re.finditer(i2, line)]:
-							print(x)
-				elif is_binary_string(rf.read(1024)) == True:
-					print(f"{filename} is a binary file. Skipping...")
-
-	def types(self, i1: str): # importing directory through types
-		i2 = input("What string are you looking for all occurrences of in this entire directory?: ")
-		if i2 is not None:
-			print(f"You are looking for {i2} in your files.")
-			self.search(i1, i2)
-
-	def propogate(self):
-		pass
-
-	def find(self, keyword: str):
-		pass
+			# enumerate
+			for index, lines in enumerate(obj):
+				if string in lines:
+					matches += 1
+					cons.print(f"[ file type '{types}' • file '{obj}' • line {index} ]", style="bold white")
+	print(f"{matches} occurrences of the string '{string}'")
 
 
-# init
-p = Path()
 
 def main():
-	print("[ grepPy is starting ]")
-	i1 = input("Enter absolute path of parent directory: ")
-	if os.path.exists(f"{i1}"):
-		print(f"Found {i1}")
-		p.types(i1)
+	dirs = input("Enter the directory to search for a string: ")
+	if os.path.exists(dirs) and dirs[-1:] != "/":
+		cons.print("[ Directory found ]", style="bold green")
+		string = input("Enter the string to search for in the files: ")
+		cons.print("[ String added ]", style="bold yellow")
+		cons.print("[ Searching files ... ]", style="bold white")
+		search(dirs, string)
+	elif dirs[-1:] == "/":
+		cons.print("[ Enter directory without an ending slash ]", style="bold red")
 	else:
-		print(f"Couldn't find {i1}.")
+		cons.print("[ A process aborted ]", style="bold red")
+
 
 if __name__ == "__main__":
 	try:
 		main()
 	except KeyboardInterrupt:
 		print("\n")
-		try:
-			sys.exit(0)
-		except SystemExit:
-			os._exit(0)
+		try: sys.exit()
+		except SystemExit: os._exit(0)
 
