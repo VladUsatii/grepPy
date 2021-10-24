@@ -37,7 +37,7 @@ def search(dirs: str, string: str) -> list:
 			for index, lines in enumerate(obj):
 				if string in lines:
 					matches += 1
-					cons.print(f"[ file type '{types}' • file '{obj}' • line {index} ]", style="bold white")
+					cons.print(f"[ file type '{types}' • file '{f}' • line {index} ]", style="bold white")
 	print(f"{matches} occurrences of the string '{string}'")
 
 
